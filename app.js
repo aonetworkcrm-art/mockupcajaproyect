@@ -31,6 +31,10 @@
     },
     scene: {
       bg: "#f0ebe3"
+    },
+    // Vertical offset for text positioning (-100 to +100 virtual px)
+    pos: {
+      offset: 0
     }
   };
 
@@ -227,13 +231,16 @@
     roundRect(ctxx, cx2, cy2, cw2, ch2, vs(3));
     ctxx.stroke();
 
+    // ─── Vertical offset ───
+    var vOff = vs(state.pos.offset);
+
     // ─── BADGE ───
     var bSize = vs(32);
     var bText = state.front.badge.toUpperCase();
     ctxx.font = "bold " + bSize + "px -apple-system, sans-serif";
     var bW = ctxx.measureText(bText).width + vs(22);
     var bH = bSize * 1.2;
-    var badgeY = cy2 + ch2 * 0.03;
+    var badgeY = cy2 + ch2 * 0.03 + vOff;
     var bx = cx - bW / 2, by = badgeY - bH / 2;
     ctxx.fillStyle = state.front.accent;
     roundRect(ctxx, bx, by, bW, bH, bH/2);
@@ -353,6 +360,19 @@
       scheduleRender();
     });
   }
+
+  // Special bind for slider with label update
+  (function () {
+    var el = document.getElementById("pos-offset");
+    var label = document.getElementById("pos-label");
+    if (el && label) {
+      el.addEventListener("input", function () {
+        state.pos.offset = parseFloat(el.value);
+        label.textContent = el.value;
+        scheduleRender();
+      });
+    }
+  })();
 
   bind("front-title", "front.title");
   bind("front-subtitle", "front.subtitle");
