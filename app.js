@@ -387,7 +387,7 @@
     // abrimos Photopea vacío para que el usuario arrastre su PSD manualmente.
     const url = "https://www.photopea.com/";
     window.open(url, "_blank");
-    showToast("🔗 Arrastra tu archivo .psd a Photopea (desde la carpeta templates/)", "info");
+    showToast("🔗 Arrastra tu archivo .psd a Photopea (disponible en el repositorio)", "info");
   }
 
   // ─── Reset ─────────────────────────────────────────────
