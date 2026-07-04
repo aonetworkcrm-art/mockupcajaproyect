@@ -1,0 +1,277 @@
+/* ─── Box Mockup — Styles ─────────────────────────────── */
+:root {
+    --bg: #0f0f1a;
+    --bg2: #1a1a2e;
+    --bg3: #16213e;
+    --surface: #1e2a4a;
+    --text: #e8e8f0;
+    --text2: #a0a0b8;
+    --accent: #6c63ff;
+    --accent2: #ff6b35;
+    --border: #2a2a4a;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────── */
+.sidebar {
+    width: 360px;
+    min-width: 360px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 20px;
+    overflow-y: auto;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sidebar::-webkit-scrollbar { width: 5px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.brand {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand h1 {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.brand p {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+}
+
+.panel {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--bg3);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.panel-header {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text2);
+    margin-bottom: 10px;
+}
+
+.field {
+    margin-bottom: 10px;
+}
+
+.field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.field input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(108,99,255,0.2);
+}
+
+.color-row {
+    display: flex;
+    gap: 10px;
+}
+
+.color-field {
+    flex: 1;
+}
+
+.color-field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.color-field input[type="color"] {
+    width: 100%;
+    height: 36px;
+    padding: 3px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+}
+
+.color-field input[type="color"]:focus {
+    border-color: var(--accent);
+}
+
+/* ─── Actions ─────────────────────────────────────────── */
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.btn {
+    padding: 11px 16px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), #7c3aed);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108,99,255,0.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(108,99,255,0.4); }
+
+.btn-photopea {
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    color: white;
+}
+.btn-photopea:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+.btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--bg3); border-color: var(--text2); }
+
+.footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text2);
+    opacity: 0.5;
+    padding-top: 12px;
+}
+
+/* ─── Preview ─────────────────────────────────────────── */
+.preview {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: var(--bg);
+}
+
+.preview canvas {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15,15,26,0.8);
+    backdrop-filter: blur(4px);
+    z-index: 5;
+    transition: opacity 0.3s;
+}
+.loading.hidden { opacity: 0; pointer-events: none; }
+
+.spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Toast ───────────────────────────────────────────── */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 100;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { border-color: #4ade80; }
+.toast.error { border-color: #f87171; }
+
+/* ─── Responsive ──────────────────────────────────────── */
+@media (max-width: 768px) {
+    .app { flex-direction: column; }
+    .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        max-height: 45vh;
+    }
+    .actions { margin-top: 0; }
+}

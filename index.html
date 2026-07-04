@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Box Mockup — Product Mockup Generator</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>" />
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>📦 Box Mockup</h1>
+                <p>Product Mockup Generator</p>
+            </div>
+
+            <!-- Front Face -->
+            <div class="panel">
+                <div class="panel-header">🟦 Cara Frontal</div>
+
+                <div class="field">
+                    <label>Título</label>
+                    <input type="text" id="front-title" value="Product Name" />
+                </div>
+                <div class="field">
+                    <label>Subtítulo</label>
+                    <input type="text" id="front-subtitle" value="Premium Quality" />
+                </div>
+                <div class="field">
+                    <label>Badge</label>
+                    <input type="text" id="front-badge" value="NEW" />
+                </div>
+                <div class="field">
+                    <label>Descripción</label>
+                    <input type="text" id="front-desc" value="The best solution for your business" />
+                </div>
+
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Fondo</label>
+                        <input type="color" id="front-bg" value="#1a1a3e" />
+                    </div>
+                    <div class="color-field">
+                        <label>Acento</label>
+                        <input type="color" id="front-accent" value="#ff6b35" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Face -->
+            <div class="panel">
+                <div class="panel-header">🟧 Cara Lateral</div>
+
+                <div class="field">
+                    <label>Texto Lateral</label>
+                    <input type="text" id="side-text" value="PRODUCT" />
+                </div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Fondo</label>
+                        <input type="color" id="side-bg" value="#ff6b35" />
+                    </div>
+                    <div class="color-field">
+                        <label>Texto</label>
+                        <input type="color" id="side-text-color" value="#ffffff" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Face -->
+            <div class="panel">
+                <div class="panel-header">🟩 Tapa Superior</div>
+
+                <div class="field">
+                    <label>Texto Tapa</label>
+                    <input type="text" id="top-text" value="BRAND" />
+                </div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Fondo</label>
+                        <input type="color" id="top-bg" value="#2a1a5e" />
+                    </div>
+                    <div class="color-field">
+                        <label>Texto</label>
+                        <input type="color" id="top-text-color" value="#ffffff" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene Background -->
+            <div class="panel">
+                <div class="panel-header">🎨 Escena</div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Fondo Escena</label>
+                        <input type="color" id="scene-bg" value="#f0ebe3" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <button id="btn-export" class="btn btn-primary">
+                    📥 Exportar PNG
+                </button>
+                <button id="btn-photopea" class="btn btn-photopea">
+                    🔗 Abrir en Photopea
+                </button>
+                <button id="btn-reset" class="btn btn-secondary">
+                    🔄 Restaurar
+                </button>
+            </div>
+
+            <div class="footer">
+                Hecho para el estilo del video · min 21:48
+            </div>
+        </aside>
+
+        <!-- Preview -->
+        <main class="preview">
+            <canvas id="canvas"></canvas>
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
