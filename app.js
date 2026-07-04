@@ -37,7 +37,6 @@
     scene: {
       bg: "#f0ebe3"
     },
-    // Vertical offset for text positioning (-100 to +100 virtual px)
     pos: {
       offset: 0
     },
@@ -46,7 +45,8 @@
       barcode: true,
       price: true,
       decor: true
-    }
+    },
+    view: 'threequarter' // 'front', 'threequarter', 'side'
   };
 
   // ─── DOM refs ───────────────────────────────────────────
@@ -442,6 +442,53 @@
     ctxx.fill();
   }
 
+  // ─── DRAW SIDE AS MAIN FACE (for side view) ──────────
+  function drawSideAsMain(ctxx) {
+    var s = BOX.side;
+    var sx = vx(s.x), sy = vy(s.y), sw = vx(s.w), sh = vy(s.h);
+    var cx = sx + sw / 2;
+    var rgb = hexToRgb(state.side.bg);
+    var rad = vs(4);
+
+    // Shadow
+    ctxx.save();
+    ctxx.shadowColor = "rgba(0,0,0,0.25)";
+    ctxx.shadowBlur = vs(28);
+    ctxx.shadowOffsetX = vs(8);
+    ctxx.shadowOffsetY = vs(14);
+    var grad = ctxx.createLinearGradient(0, sy, 0, sy + sh);
+    grad.addColorStop(0, rgba({r:rgb.r+18,g:rgb.g+18,b:rgb.b+18}, 1));
+    grad.addColorStop(1, rgba({r:rgb.r-10,g:rgb.g-10,b:rgb.b-10}, 1));
+    ctxx.fillStyle = grad;
+    roundRect(ctxx, sx, sy, sw, sh, rad);
+    ctxx.fill();
+    ctxx.restore();
+
+    // Border
+    ctxx.strokeStyle = "rgba(255,255,255,0.06)";
+    ctxx.lineWidth = 1;
+    roundRect(ctxx, sx + 0.5, sy + 0.5, sw - 1, sh - 1, rad - 0.5);
+    ctxx.stroke();
+
+    // Gloss
+    var gloss = ctxx.createLinearGradient(0, sy, 0, sy + sh * 0.12);
+    gloss.addColorStop(0, "rgba(255,255,255,0.08)");
+    gloss.addColorStop(1, "rgba(255,255,255,0)");
+    ctxx.fillStyle = gloss;
+    roundRect(ctxx, sx + 2, sy + 2, sw - 4, sh * 0.12, rad > 2 ? 1 : 1);
+    ctxx.fill();
+
+    // Side text centered (horizontal)
+    ctxx.save();
+    ctxx.fillStyle = state.side.textColor;
+    var tSize = sw * 0.5;
+    ctxx.font = "bold " + tSize + "px -apple-system, sans-serif";
+    ctxx.textAlign = "center";
+    ctxx.textBaseline = "middle";
+    ctxx.fillText(state.side.text, cx, sy + sh / 2);
+    ctxx.restore();
+  }
+
   // ─── MAIN RENDER ───────────────────────────────────────
   function renderTo(ctxx, w, h) {
     ctxx.clearRect(0, 0, w, h);
@@ -450,14 +497,23 @@
     ctxx.fillStyle = state.scene.bg;
     ctxx.fillRect(0, 0, w, h);
 
-    // 2. Floor shadow
-    drawSceneShadow(ctxx);
-
-    // 3. Side face (behind front)
-    drawSideFace(ctxx);
-
-    // 4. Front face (on top with drop shadow)
-    drawFrontFace(ctxx);
+    // 2. View transform (shift the box to center different faces)
+    ctxx.save();
+    var view = state.view;
+    if (view === 'front') {
+      ctxx.translate(-vs(295), 0); // center front face (current center 1295 → canvas center 1000)
+      drawSceneShadow(ctxx);
+      drawFrontFace(ctxx);
+    } else if (view === 'threequarter') {
+      drawSceneShadow(ctxx);
+      drawSideFace(ctxx);
+      drawFrontFace(ctxx);
+    } else if (view === 'side') {
+      ctxx.translate(vs(260), 0); // center side face (current center 830 → canvas center 1090)
+      drawSceneShadow(ctxx);
+      drawSideAsMain(ctxx);
+    }
+    ctxx.restore();
   }
 
   function render() {
@@ -758,6 +814,26 @@
   // Bind AI buttons
   var aiBtn = document.getElementById("btn-ai-generate");
   if (aiBtn) aiBtn.addEventListener("click", generateVariations);
+
+  // ─── View selector ──────────────────────────────────────
+  function bindViewButtons() {
+    var buttons = document.querySelectorAll(".btn-view");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener("click", function () {
+        var view = this.getAttribute("data-view");
+        if (!view) return;
+        state.view = view;
+        // Toggle active class
+        var all = document.querySelectorAll(".btn-view");
+        for (var j = 0; j < all.length; j++) {
+          all[j].classList.remove("active");
+        }
+        this.classList.add("active");
+        scheduleRender();
+      });
+    }
+  }
+  bindViewButtons();
 
   // ─── Init ────────────────────────────────────────────────
   window.addEventListener("resize", function () { resizeCanvas(); scheduleRender(); });
