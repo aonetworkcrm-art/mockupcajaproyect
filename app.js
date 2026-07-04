@@ -577,6 +577,188 @@
 
   function resetAll() { location.reload(); }
 
+  // ─── OPENROUTER AI ────────────────────────────────────────
+  var aiSuggestions = [];
+  var aiLoading = false;
+
+  // Load API key from localStorage
+  var savedKey = localStorage.getItem("openrouter_key") || "";
+  var apiKeyInput = document.getElementById("ai-api-key");
+  if (apiKeyInput) {
+    apiKeyInput.value = savedKey;
+    apiKeyInput.addEventListener("input", function () {
+      localStorage.setItem("openrouter_key", apiKeyInput.value);
+    });
+  }
+
+  function generateVariations() {
+    var keyEl = document.getElementById("ai-api-key");
+    var key = keyEl ? keyEl.value.trim() : "";
+    if (!key) {
+      showToast("⚠️ Ingresa tu API key de OpenRouter primero", "error");
+      return;
+    }
+
+    var btn = document.getElementById("btn-ai-generate");
+    var container = document.getElementById("ai-suggestions");
+    if (!btn || !container) return;
+
+    aiLoading = true;
+    btn.disabled = true;
+    btn.textContent = "⏳ Generando...";
+    container.innerHTML = "<div class='ai-loading'>Generando variaciones...</div>";
+
+    // Build the current config for context
+    var currentConfig = {
+      title: state.front.title,
+      subtitle: state.front.subtitle,
+      badge: state.front.badge,
+      desc: state.front.desc,
+      price: state.front.price,
+      logoText: state.front.logoText,
+      side: state.side.text,
+      bg: state.front.bg,
+      accent: state.front.accent,
+      sideBg: state.side.bg
+    };
+
+    var prompt = [
+      "You are a product packaging designer. Given this product box configuration:",
+      JSON.stringify(currentConfig, null, 2),
+      "",
+      "Generate EXACTLY 3 creative variations in this JSON format (no markdown, no code blocks, pure JSON):",
+      "[{",
+      '  "name": "Short describing name",',
+      '  "title": "New product title",',
+      '  "subtitle": "New subtitle",',
+      '  "badge": "New badge text",',
+      '  "desc": "New description",',
+      '  "price": "New price",',
+      '  "logoText": "Brand name",',
+      '  "side": "Side text",',
+      '  "bg": "#hex color for front face",',
+      '  "accent": "#hex accent color",',
+      '  "sideBg": "#hex for side face"',
+      "}]"
+    ].join("\n");
+
+    fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + key,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://box-mockup.netlify.app",
+        "X-Title": "Box Mockup Generator"
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-4o-mini",
+        messages: [
+          { role: "user", content: prompt }
+        ],
+        temperature: 0.8,
+        max_tokens: 2000
+      })
+    })
+    .then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function (data) {
+      var content = data.choices[0].message.content;
+      // Clean markdown code blocks if present
+      content = content.replace(/```json?/g, "").replace(/```/g, "").trim();
+      aiSuggestions = JSON.parse(content);
+      if (!Array.isArray(aiSuggestions)) {
+        aiSuggestions = [aiSuggestions];
+      }
+      renderSuggestions(container);
+      showToast("✅ " + aiSuggestions.length + " variaciones generadas", "success");
+    })
+    .catch(function (err) {
+      container.innerHTML = "<div class='ai-error'>❌ Error: " + err.message + "</div>";
+      showToast("Error: " + err.message, "error");
+    })
+    .finally(function () {
+      aiLoading = false;
+      btn.disabled = false;
+      btn.textContent = "✨ Generar variaciones";
+    });
+  }
+
+  function renderSuggestions(container) {
+    if (!container || !aiSuggestions.length) {
+      container.innerHTML = "<div class='ai-empty'>No se generaron variaciones</div>";
+      return;
+    }
+    var html = "";
+    for (var i = 0; i < aiSuggestions.length; i++) {
+      var s = aiSuggestions[i];
+      var name = s.name || "Variación " + (i + 1);
+      // Color previews
+      var colors = [s.bg, s.accent, s.sideBg].filter(function(c) { return c; });
+      var colorDots = colors.map(function(c) {
+        return "<span class='ai-color' style='background:" + c + "'></span>";
+      }).join("");
+      html += [
+        "<div class='ai-card' data-idx='" + i + "'>",
+        "  <div class='ai-card-header'>" + name + "</div>",
+        "  <div class='ai-card-colors'>" + colorDots + "</div>",
+        "  <div class='ai-card-text'>" + (s.title || "") + "</div>",
+        "  <div class='ai-card-sub'>" + (s.subtitle || "") + "</div>",
+        "  <button class='btn-ai-apply' data-idx='" + i + "'>Aplicar</button>",
+        "</div>"
+      ].join("");
+    }
+    container.innerHTML = html;
+
+    // Add apply handlers
+    container.querySelectorAll(".btn-ai-apply").forEach(function(btn) {
+      btn.addEventListener("click", function () {
+        var idx = parseInt(btn.getAttribute("data-idx"));
+        applyVariation(idx);
+      });
+    });
+  }
+
+  function applyVariation(idx) {
+    var s = aiSuggestions[idx];
+    if (!s) return;
+
+    if (s.title) state.front.title = s.title;
+    if (s.subtitle) state.front.subtitle = s.subtitle;
+    if (s.badge) state.front.badge = s.badge;
+    if (s.desc) state.front.desc = s.desc;
+    if (s.price) state.front.price = s.price;
+    if (s.logoText) state.front.logoText = s.logoText;
+    if (s.side) state.side.text = s.side;
+    if (s.bg) state.front.bg = s.bg;
+    if (s.accent) state.front.accent = s.accent;
+    if (s.sideBg) state.side.bg = s.sideBg;
+
+    // Sync UI fields
+    function sync(id, val) {
+      var el = document.getElementById(id);
+      if (el) el.value = val;
+    }
+    sync("front-title", s.title);
+    sync("front-subtitle", s.subtitle);
+    sync("front-badge", s.badge);
+    sync("front-desc", s.desc);
+    sync("front-price", s.price);
+    sync("front-logo", s.logoText);
+    sync("side-text", s.side);
+    sync("front-bg", s.bg);
+    sync("front-accent", s.accent);
+    sync("side-bg", s.sideBg);
+
+    scheduleRender();
+    showToast("✅ Aplicada: " + (s.name || "Variación " + (idx + 1)), "success");
+  }
+
+  // Bind AI buttons
+  var aiBtn = document.getElementById("btn-ai-generate");
+  if (aiBtn) aiBtn.addEventListener("click", generateVariations);
+
   // ─── Init ────────────────────────────────────────────────
   window.addEventListener("resize", function () { resizeCanvas(); scheduleRender(); });
   document.getElementById("btn-export").addEventListener("click", exportPNG);
