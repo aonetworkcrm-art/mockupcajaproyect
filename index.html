@@ -3,23 +3,22 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Box Mockup — Product Mockup Generator</title>
+    <title>Box Mockup — Photopea Configurator</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>" />
 </head>
 <body>
     <div class="app">
-        <!-- Sidebar -->
+        <!-- Sidebar: Configurator -->
         <aside class="sidebar">
             <div class="brand">
                 <h1>📦 Box Mockup</h1>
-                <p>Product Mockup Generator</p>
+                <p>Photopea Configurator</p>
             </div>
 
             <!-- Front Face -->
             <div class="panel">
-                <div class="panel-header">🟦 Cara Frontal</div>
-
+                <div class="panel-header">📝 Texto</div>
                 <div class="field">
                     <label>Título</label>
                     <input type="text" id="front-title" value="Product Name" />
@@ -36,73 +35,91 @@
                     <label>Descripción</label>
                     <input type="text" id="front-desc" value="The best solution for your business" />
                 </div>
-
-                <div class="color-row">
-                    <div class="color-field">
-                        <label>Fondo</label>
-                        <input type="color" id="front-bg" value="#1a1a3e" />
-                    </div>
-                    <div class="color-field">
-                        <label>Acento</label>
-                        <input type="color" id="front-accent" value="#ff6b35" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- Side Face -->
-            <div class="panel">
-                <div class="panel-header">🟧 Cara Lateral</div>
-
                 <div class="field">
                     <label>Texto Lateral</label>
                     <input type="text" id="side-text" value="PRODUCT" />
                 </div>
-                <div class="color-row">
-                    <div class="color-field">
-                        <label>Fondo</label>
-                        <input type="color" id="side-bg" value="#ff6b35" />
-                    </div>
-                    <div class="color-field">
-                        <label>Texto</label>
-                        <input type="color" id="side-text-color" value="#ffffff" />
-                    </div>
-                </div>
             </div>
 
-            <!-- Scene Background -->
+            <!-- Colors -->
             <div class="panel">
-                <div class="panel-header">🎨 Escena</div>
+                <div class="panel-header">🎨 Colores</div>
                 <div class="color-row">
+                    <div class="color-field">
+                        <label>Fondo Frontal</label>
+                        <input type="color" id="front-bg" value="#1a1a3e" />
+                    </div>
+                    <div class="color-field">
+                        <label>Fondo Lateral</label>
+                        <input type="color" id="side-bg" value="#ff6b35" />
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Acento</label>
+                        <input type="color" id="front-accent" value="#ff6b35" />
+                    </div>
                     <div class="color-field">
                         <label>Fondo Escena</label>
                         <input type="color" id="scene-bg" value="#f0ebe3" />
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Color Título</label>
+                        <input type="color" id="front-title-color" value="#ffffff" />
+                    </div>
+                    <div class="color-field">
+                        <label>Color Subtítulo</label>
+                        <input type="color" id="front-subtitle-color" value="#cccccc" />
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Color Badge</label>
+                        <input type="color" id="front-badge-color" value="#ffffff" />
+                    </div>
+                    <div class="color-field">
+                        <label>Color Lateral</label>
+                        <input type="color" id="side-text-color" value="#ffffff" />
                     </div>
                 </div>
             </div>
 
             <!-- Actions -->
             <div class="actions">
-                <button id="btn-export" class="btn btn-primary">
-                    📥 Exportar PNG
-                </button>
                 <button id="btn-photopea" class="btn btn-photopea">
-                    🔗 Abrir en Photopea
+                    🚀 Abrir en Photopea
                 </button>
                 <button id="btn-reset" class="btn btn-secondary">
                     🔄 Restaurar
                 </button>
             </div>
 
+            <div class="how-it-works">
+                <div class="panel-header">💡 Cómo funciona</div>
+                <ol>
+                    <li>Configura texto y colores aquí</li>
+                    <li>Click <strong>"Abrir en Photopea"</strong></li>
+                    <li>Photopea carga el PSD real</li>
+                    <li>Haz doble-click en Frontal/Lateral para editar texto</li>
+                    <li>Exporta desde Photopea (Archivo → Exportar como)</li>
+                </ol>
+            </div>
+
             <div class="footer">
-                Hecho para el estilo del video · min 21:48
+                Basado en MockupCaja.psd — Video min 21:48
             </div>
         </aside>
 
-        <!-- Preview -->
+        <!-- Preview: Reference Image -->
         <main class="preview">
-            <canvas id="canvas"></canvas>
-            <div id="loading" class="loading">
-                <div class="spinner"></div>
+            <div class="preview-container">
+                <div class="preview-label">Vista de referencia</div>
+                <img id="reference-img" src="psd_render.png" alt="Mockup Reference" />
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
             </div>
         </main>
     </div>
