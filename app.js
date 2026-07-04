@@ -17,12 +17,17 @@
       subtitle: "Premium Quality",
       badge: "NEW",
       desc: "The best solution for your business",
+      price: "$49.99",
+      logoText: "BRAND",
+      barcodeText: "7 890123 456789",
       bg: "#1a1a3e",
       accent: "#ff6b35",
       titleColor: "#ffffff",
       subtitleColor: "#cccccc",
       badgeColor: "#ffffff",
-      descColor: "#aaaaaa"
+      descColor: "#aaaaaa",
+      priceColor: "#ffd700",
+      logoColor: "#ffffff"
     },
     side: {
       text: "PRODUCT",
@@ -35,6 +40,12 @@
     // Vertical offset for text positioning (-100 to +100 virtual px)
     pos: {
       offset: 0
+    },
+    toggles: {
+      logo: true,
+      barcode: true,
+      price: true,
+      decor: true
     }
   };
 
@@ -86,6 +97,21 @@
   }
   function rgba(c, a) {
     return "rgba(" + (c.r|0) + "," + (c.g|0) + "," + (c.b|0) + "," + a + ")";
+  }
+
+  // ─── Draw a 4-pointed star ────────────────────────────
+  function drawStar(ctxx, cx, cy, r) {
+    ctxx.beginPath();
+    for (var i = 0; i < 8; i++) {
+      var angle = (i * Math.PI) / 4 - Math.PI / 2;
+      var rad = i % 2 === 0 ? r : r * 0.35;
+      var px = cx + Math.cos(angle) * rad;
+      var py = cy + Math.sin(angle) * rad;
+      if (i === 0) ctxx.moveTo(px, py);
+      else ctxx.lineTo(px, py);
+    }
+    ctxx.closePath();
+    ctxx.fill();
   }
 
   // ─── Rounded rect path ─────────────────────────────────
@@ -234,6 +260,37 @@
     // ─── Vertical offset ───
     var vOff = vs(state.pos.offset);
 
+    // ─── LOGO ───
+    if (state.toggles.logo) {
+      var logoText = state.front.logoText;
+      if (logoText) {
+        var lSize = vs(16);
+        var lR = vs(28);
+        var lx = cx, ly = cy2 + ch2 * 0.02 + vOff;
+        // Outer circle
+        ctxx.fillStyle = state.front.accent;
+        ctxx.beginPath();
+        ctxx.arc(lx, ly, lR, 0, Math.PI * 2);
+        ctxx.fill();
+        // Inner circle
+        ctxx.fillStyle = state.front.bg;
+        ctxx.beginPath();
+        ctxx.arc(lx, ly, lR - vs(3), 0, Math.PI * 2);
+        ctxx.fill();
+        // Logo text
+        ctxx.fillStyle = state.front.logoColor;
+        ctxx.font = "bold " + lSize + "px -apple-system, sans-serif";
+        ctxx.textAlign = "center";
+        ctxx.textBaseline = "middle";
+        ctxx.fillText(logoText.charAt(0).toUpperCase(), lx, ly);
+        // Brand name below circle
+        ctxx.font = "bold " + vs(12) + "px -apple-system, sans-serif";
+        ctxx.fillStyle = state.front.accent;
+        ctxx.textBaseline = "top";
+        ctxx.fillText(logoText.toUpperCase(), lx, ly + lR + vs(4));
+      }
+    }
+
     // ─── BADGE ───
     var bSize = vs(32);
     var bText = state.front.badge.toUpperCase();
@@ -283,11 +340,84 @@
     // ─── Bottom accent bar ───
     var barH = vs(20);
     var barW = fw * 0.45;
-    var barY = Math.max(cursorY + vs(8), fy + fh * 0.85);
+    var barY = Math.max(cursorY + vs(8), fy + fh * 0.82);
     if (barY + barH + vs(8) < fy + fh) {
       ctxx.fillStyle = state.front.accent;
       roundRect(ctxx, cx - barW/2, barY, barW, barH, barH/2);
       ctxx.fill();
+    }
+    var afterBar = barY + barH + vs(12);
+
+    // ─── PRICE ───
+    if (state.toggles.price && state.front.price) {
+      var pSize = vs(32);
+      ctxx.fillStyle = state.front.priceColor;
+      ctxx.font = "bold " + pSize + "px -apple-system, sans-serif";
+      ctxx.textAlign = "center";
+      ctxx.textBaseline = "top";
+      ctxx.fillText(state.front.price, cx, afterBar);
+      afterBar += pSize + vs(6);
+    }
+
+    // ─── DECORATIVE ICONS ───
+    if (state.toggles.decor) {
+      var dR = vs(4);
+      ctxx.fillStyle = rgba({r:255,g:255,b:255}, 0.12);
+      // Top-left corner dots
+      var dotY1 = cy2 + vs(8) + vOff;
+      var dotX1 = cx2 + vs(8);
+      for (var di = 0; di < 3; di++) {
+        ctxx.beginPath();
+        ctxx.arc(dotX1 + di * vs(14), dotY1, dR, 0, Math.PI * 2);
+        ctxx.fill();
+      }
+      // Top-right corner dots
+      var dotX2 = cx2 + cw2 - vs(8);
+      for (var di = 0; di < 3; di++) {
+        ctxx.beginPath();
+        ctxx.arc(dotX2 - di * vs(14), dotY1, dR, 0, Math.PI * 2);
+        ctxx.fill();
+      }
+      // Small 4-pointed stars at top corners
+      var starY = cy2 + vs(20) + vOff;
+      var starSize = vs(6);
+      [[dotX1 + vs(6), starY], [dotX2 - vs(6), starY]].forEach(function(p) {
+        drawStar(ctxx, p[0], p[1], starSize);
+      });
+    }
+
+    // ─── BARCODE ───
+    if (state.toggles.barcode) {
+      var bcY = fy + fh - vs(70) + vOff;
+      var bcX = fx + fw * 0.15;
+      var bcW = fw * 0.7;
+      var bcH = vs(36);
+      // White background
+      ctxx.fillStyle = "rgba(255,255,255,0.9)";
+      roundRect(ctxx, bcX, bcY, bcW, bcH, vs(2));
+      ctxx.fill();
+      // Barcode lines
+      var lines = [2,4,1,3,5,2,1,4,2,3,1,5,2,1,3,4,1,2,5,3,2,1,4,2,3,5,1,2,4,1,3,2,5,1,2,3];
+      var totalW = 0;
+      var lineMaxW = bcW - vs(16);
+      for (var li = 0; li < lines.length; li++) {
+        totalW += lines[li];
+      }
+      var lineScale = lineMaxW / totalW;
+      var lx = bcX + vs(8);
+      for (var li = 0; li < lines.length; li++) {
+        var lw = lines[li] * lineScale;
+        ctxx.fillStyle = li % 2 === 0 ? "#000" : "rgba(255,255,255,0.9)";
+        ctxx.fillRect(lx, bcY + vs(3), lw, bcH - vs(6));
+        lx += lw;
+      }
+      // Barcode text below
+      var bcText = state.front.barcodeText || "7 890123 456789";
+      ctxx.fillStyle = "#000";
+      ctxx.font = "bold " + vs(9) + "px 'Courier New', monospace";
+      ctxx.textAlign = "center";
+      ctxx.textBaseline = "top";
+      ctxx.fillText(bcText, bcX + bcW/2, bcY + bcH + vs(2));
     }
   }
 
@@ -373,6 +503,30 @@
       });
     }
   })();
+
+  // Checkbox toggle bind
+  function bindToggle(id, path) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("change", function () {
+      var keys = path.split(".");
+      var obj = state;
+      for (var i = 0; i < keys.length - 1; i++) obj = obj[keys[i]];
+      obj[keys[keys.length - 1]] = el.checked;
+      scheduleRender();
+    });
+  }
+
+  bindToggle("toggle-logo", "toggles.logo");
+  bindToggle("toggle-barcode", "toggles.barcode");
+  bindToggle("toggle-price", "toggles.price");
+  bindToggle("toggle-decor", "toggles.decor");
+
+  bind("front-logo", "front.logoText");
+  bind("front-price", "front.price");
+  bind("front-barcode", "front.barcodeText");
+  bind("front-logo-color", "front.logoColor");
+  bind("front-price-color", "front.priceColor");
 
   bind("front-title", "front.title");
   bind("front-subtitle", "front.subtitle");
