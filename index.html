@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Box Mockup — Photopea Configurator</title>
+    <title>Box Mockup — Generator</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>" />
 </head>
 <body>
     <div class="app">
-        <!-- Sidebar: Configurator -->
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="brand">
                 <h1>📦 Box Mockup</h1>
-                <p>Photopea Configurator</p>
+                <p>En vivo · Sobre el PSD real</p>
             </div>
 
-            <!-- Front Face -->
+            <!-- Texto -->
             <div class="panel">
                 <div class="panel-header">📝 Texto</div>
                 <div class="field">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <!-- Colors -->
+            <!-- Colores -->
             <div class="panel">
                 <div class="panel-header">🎨 Colores</div>
                 <div class="color-row">
@@ -84,42 +84,36 @@
                         <input type="color" id="side-text-color" value="#ffffff" />
                     </div>
                 </div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <label>Color Descripción</label>
+                        <input type="color" id="front-desc-color" value="#aaaaaa" />
+                    </div>
+                    <div class="color-field">
+                    </div>
+                </div>
             </div>
 
             <!-- Actions -->
             <div class="actions">
-                <button id="btn-photopea" class="btn btn-photopea">
-                    🚀 Abrir en Photopea
+                <button id="btn-export" class="btn btn-primary">
+                    📥 Exportar PNG (4000×3500)
                 </button>
                 <button id="btn-reset" class="btn btn-secondary">
                     🔄 Restaurar
                 </button>
             </div>
 
-            <div class="how-it-works">
-                <div class="panel-header">💡 Cómo funciona</div>
-                <ol>
-                    <li>Configura texto y colores aquí</li>
-                    <li>Click <strong>"Abrir en Photopea"</strong></li>
-                    <li>Photopea carga el PSD real</li>
-                    <li>Haz doble-click en Frontal/Lateral para editar texto</li>
-                    <li>Exporta desde Photopea (Archivo → Exportar como)</li>
-                </ol>
-            </div>
-
             <div class="footer">
-                Basado en MockupCaja.psd — Video min 21:48
+                Basado en MockupCaja.psd — Coordenadas exactas del PSD
             </div>
         </aside>
 
-        <!-- Preview: Reference Image -->
+        <!-- Preview -->
         <main class="preview">
-            <div class="preview-container">
-                <div class="preview-label">Vista de referencia</div>
-                <img id="reference-img" src="psd_render.png" alt="Mockup Reference" />
-                <div id="loading" class="loading">
-                    <div class="spinner"></div>
-                </div>
+            <canvas id="canvas"></canvas>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
             </div>
         </main>
     </div>
