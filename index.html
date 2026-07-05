@@ -3,17 +3,40 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Box Mockup — Generator</title>
+    <title>Box Mockup 3D — Generator</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>" />
+    <!-- Three.js Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="app">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="brand">
-                <h1>📦 Box Mockup</h1>
-                <p>En vivo · Sobre el PSD real</p>
+                <h1>📦 Box Mockup 3D</h1>
+                <p>WebGL · Three.js · Perspectiva real</p>
+            </div>
+
+            <!-- Vista -->
+            <div class="panel">
+                <div class="panel-header">🔄 Vista</div>
+                <div class="view-selector">
+                    <button class="btn-view" data-view="front">Frontal</button>
+                    <button class="btn-view active" data-view="threequarter">3/4</button>
+                    <button class="btn-view" data-view="side">Lateral</button>
+                    <button class="btn-view" data-view="top">Superior</button>
+                </div>
+                <div class="hint" style="font-size:10px;color:var(--text2);opacity:0.6;margin-top:6px;text-align:center;">
+                    🖱 Arrastra para rotar libremente · Rueda para zoom
+                </div>
             </div>
 
             <!-- Texto -->
@@ -79,7 +102,7 @@
                         <input type="checkbox" id="toggle-barcode" checked /> Código barras
                     </label>
                     <label class="checkbox-label">
-                        <input type="checkbox" id="toggle-decor" checked /> Iconos decorativos
+                        <input type="checkbox" id="toggle-decor" checked /> Decorativos
                     </label>
                 </div>
             </div>
@@ -94,7 +117,7 @@
                     </div>
                     <div class="color-field">
                         <label>Fondo Lateral</label>
-                        <input type="color" id="side-bg" value="#ff6b35" />
+                        <input type="color" id="side-bg" value="#d45a2a" />
                     </div>
                 </div>
                 <div class="color-row">
@@ -141,22 +164,12 @@
             <div class="panel">
                 <div class="panel-header">↕️ Posición Vertical</div>
                 <div class="field">
-                    <label>Ajustar posición del texto: <span id="pos-label">0</span></label>
+                    <label>Ajustar: <span id="pos-label">0</span></label>
                     <input type="range" id="pos-offset" min="-100" max="100" value="0" />
                     <div class="range-labels">
                         <span>Arriba</span>
                         <span>Abajo</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- Vista -->
-            <div class="panel">
-                <div class="panel-header">🔄 Vista</div>
-                <div class="view-selector">
-                    <button class="btn-view" data-view="front">Frontal</button>
-                    <button class="btn-view active" data-view="threequarter">3/4</button>
-                    <button class="btn-view" data-view="side">Lateral</button>
                 </div>
             </div>
 
@@ -184,7 +197,7 @@
             </div>
 
             <div class="footer">
-                Basado en MockupCaja.psd — Coordenadas exactas del PSD
+                Three.js 3D · Perspectiva real · Basado en MockupCaja.psd
             </div>
         </aside>
 
@@ -199,6 +212,6 @@
 
     <div id="toast" class="toast"></div>
 
-    <script src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
